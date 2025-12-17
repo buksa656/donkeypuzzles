@@ -31,19 +31,19 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-// Save game state to localStorage
+// Save game state
 function saveGameState(state) {
     try {
-        localStorage.setItem('yarnPuzzleState', JSON.stringify(state));
+        localStorage.setItem('donkeyPuzzlesState', JSON.stringify(state));
     } catch (e) {
         console.error('Failed to save game state:', e);
     }
 }
 
-// Load game state from localStorage
+// Load game state
 function loadGameState() {
     try {
-        const state = localStorage.getItem('yarnPuzzleState');
+        const state = localStorage.getItem('donkeyPuzzlesState');
         return state ? JSON.parse(state) : null;
     } catch (e) {
         console.error('Failed to load game state:', e);
@@ -51,7 +51,7 @@ function loadGameState() {
     }
 }
 
-// Format time (for future time-trial mode)
+// Format time
 function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;

@@ -1,4 +1,4 @@
-// Main game logic
+// Main game logic with enhanced Yarn Fever mechanics
 class Game {
     constructor() {
         this.canvas = document.getElementById('game-canvas');
@@ -10,6 +10,8 @@ class Game {
         this.currentLevel = 1;
         this.moves = 0;
         this.score = 0;
+        this.totalScore = 0;
+        this.completedLevels = 0;
         
         this.yarns = [];
         this.slots = [];
@@ -18,8 +20,10 @@ class Game {
         this.selectedYarn = null;
         this.draggedYarn = null;
         this.history = [];
+        this.particles = [];
         
         this.setupEventListeners();
+        this.loadSettings();
     }
     
     start() {
@@ -38,13 +42,14 @@ class Game {
         this.moves = 0;
         this.score = 0;
         this.history = [];
+        this.particles = [];
         
         // Create slots
         this.slots = [];
         this.tempSlots = [];
         
         for (let i = 0; i < levelData.targetSlots; i++) {
-            this.slots.push(new Slot(i, 'target', levelData.slotCapacity));
+            this.slots.push(new Slot(i, 'target', levelData.slotCapacity, levelData.slotColors ? levelData.slotColors[i] : null));
         }
         
         for (let i = 0; i < levelData.tempSlots; i++) {
@@ -61,7 +66,22 @@ class Game {
         });
         
         this.updateUI();
-        this.renderer.render(this.yarns, this.slots, this.tempSlots, this.draggedYarn);
+        this.renderer.render(this.yarns, this.slots, this.tempSlots, this.draggedYarn, this.particles);
+        this.startGameLoop();
+    }
+    
+    startGameLoop() {
+        if (this.gameLoopId) cancelAnimationFrame(this.gameLoopId);
+        
+        const loop = () => {
+            // Update particles
+            this.particles = this.particles.filter(p => p.life > 0);
+            this.particles.forEach(p => p.update());
+            
+            this.renderer.render(this.yarns, this.slots, this.tempSlots, this.draggedYarn, this.particles);
+            this.gameLoopId = requestAnimationFrame(loop);
+        };
+        this.gameLoopId = requestAnimationFrame(loop);
     }
     
     setupEventListeners() {
@@ -69,6 +89,7 @@ class Game {
         this.canvas.addEventListener('mousedown', (e) => this.handleStart(e));
         this.canvas.addEventListener('mousemove', (e) => this.handleMove(e));
         this.canvas.addEventListener('mouseup', (e) => this.handleEnd(e));
+        this.canvas.addEventListener('mouseleave', (e) => this.handleEnd(e));
         
         // Touch events
         this.canvas.addEventListener('touchstart', (e) => {
@@ -92,7 +113,7 @@ class Game {
         if (clickedYarn && clickedYarn.isTopOfStack()) {
             this.selectedYarn = clickedYarn;
             this.draggedYarn = clickedYarn;
-            this.renderer.render(this.yarns, this.slots, this.tempSlots, this.draggedYarn);
+            this.draggedYarn.isDragged = true;
         }
     }
     
@@ -100,7 +121,6 @@ class Game {
         if (this.draggedYarn) {
             const pos = this.renderer.getMousePos(e);
             this.draggedYarn.dragPosition = pos;
-            this.renderer.render(this.yarns, this.slots, this.tempSlots, this.draggedYarn);
         }
     }
     
@@ -111,11 +131,12 @@ class Game {
             
             if (targetSlot && targetSlot.canAddYarn(this.draggedYarn)) {
                 this.moveYarn(this.draggedYarn, targetSlot);
+                this.createParticles(pos);
             }
             
             this.draggedYarn.dragPosition = null;
+            this.draggedYarn.isDragged = false;
             this.draggedYarn = null;
-            this.renderer.render(this.yarns, this.slots, this.tempSlots, null);
             
             this.checkWinCondition();
         }
@@ -137,10 +158,10 @@ class Game {
         targetSlot.addYarn(yarn);
         this.moves++;
         this.updateUI();
+        this.playSound('move');
     }
     
     findYarnAt(pos) {
-        // Check all slots for yarns
         const allSlots = [...this.slots, ...this.tempSlots];
         
         for (const slot of allSlots) {
@@ -174,9 +195,20 @@ class Game {
         }
         
         // Level complete!
-        this.score += Math.max(1000 - (this.moves * 10), 100);
+        const baseScore = 1000;
+        const movesPenalty = Math.min(this.moves * 5, 500);
+        const levelBonus = this.currentLevel * 100;
+        const isPerfect = this.moves <= this.currentLevel + 5;
+        
+        this.score = Math.max(baseScore - movesPenalty, 100) + levelBonus;
+        if (isPerfect) this.score += 500;
+        
+        this.totalScore += this.score;
+        this.completedLevels++;
+        
         this.updateUI();
-        showLevelComplete(this.moves, this.score);
+        this.playSound('levelComplete');
+        showLevelComplete(this.moves, this.score, isPerfect);
         return true;
     }
     
@@ -189,7 +221,7 @@ class Game {
         
         this.moves++;
         this.updateUI();
-        this.renderer.render(this.yarns, this.slots, this.tempSlots, null);
+        this.playSound('undo');
     }
     
     reset() {
@@ -197,9 +229,23 @@ class Game {
     }
     
     showHint() {
-        // Find a valid move and highlight it
-        console.log('💡 Hint requested');
-        // TODO: Implement hint logic
+        // Find a valid move
+        const allSlots = [...this.slots, ...this.tempSlots];
+        
+        for (const slot of allSlots) {
+            const yarn = slot.getTopYarn();
+            if (yarn) {
+                for (const targetSlot of allSlots) {
+                    if (targetSlot !== slot && targetSlot.canAddYarn(yarn)) {
+                        console.log('💡 Hint: Try moving this yarn!');
+                        yarn.showHint = true;
+                        setTimeout(() => { yarn.showHint = false; }, 1000);
+                        this.playSound('hint');
+                        return;
+                    }
+                }
+            }
+        }
     }
     
     nextLevel() {
@@ -207,9 +253,64 @@ class Game {
         this.loadLevel(this.currentLevel);
     }
     
+    createParticles(pos) {
+        if (!this.settings.particlesEnabled) return;
+        
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const velocity = {
+                x: Math.cos(angle) * 3,
+                y: Math.sin(angle) * 3
+            };
+            this.particles.push(new Particle(pos.x, pos.y, velocity));
+        }
+    }
+    
+    playSound(type) {
+        if (!this.settings.soundEnabled) return;
+        // Sound implementation would go here
+        console.log('🔊 Sound:', type);
+    }
+    
+    loadSettings() {
+        this.settings = {
+            soundEnabled: true,
+            particlesEnabled: true
+        };
+    }
+    
     updateUI() {
         document.getElementById('level-display').textContent = `Level: ${this.currentLevel}`;
         document.getElementById('moves-display').textContent = `Moves: ${this.moves}`;
-        document.getElementById('score-display').textContent = `Score: ${this.score}`;
+        document.getElementById('score-display').textContent = `Score: ${this.totalScore + this.score}`;
+    }
+}
+
+// Particle class for effects
+class Particle {
+    constructor(x, y, velocity) {
+        this.x = x;
+        this.y = y;
+        this.vx = velocity.x;
+        this.vy = velocity.y;
+        this.life = 1;
+        this.color = YARN_COLORS[Math.floor(Math.random() * YARN_COLORS.length)];
+    }
+    
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.1; // gravity
+        this.life -= 0.02;
+    }
+    
+    draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
     }
 }

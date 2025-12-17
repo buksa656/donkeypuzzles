@@ -13,7 +13,6 @@ class LevelManager {
             return this.levels;
         } catch (error) {
             console.error('Failed to load levels:', error);
-            // Return default levels if loading fails
             return this.getDefaultLevels();
         }
     }
@@ -28,22 +27,20 @@ class LevelManager {
             levels: [
                 {
                     id: 1,
+                    name: 'Getting Started',
                     targetSlots: 3,
                     tempSlots: 2,
-                    slotCapacity: 4,
+                    slotCapacity: 3,
                     yarns: [
                         { color: '#FF6B9D', startSlot: 0 },
                         { color: '#FF6B9D', startSlot: 0 },
                         { color: '#FF6B9D', startSlot: 0 },
-                        { color: '#FF6B9D', startSlot: 0 },
                         { color: '#4ECDC4', startSlot: 1 },
                         { color: '#4ECDC4', startSlot: 1 },
-                        { color: '#4ECDC4', startSlot: 1 },
-                        { color: '#4ECDC4', startSlot: 1 },
-                        { color: '#FFD93D', startSlot: 0 },
-                        { color: '#FFD93D', startSlot: 0 },
+                        { color: '#4ECDC4', startSlot: 0 },
                         { color: '#FFD93D', startSlot: 1 },
-                        { color: '#FFD93D', startSlot: 1 }
+                        { color: '#FFD93D', startSlot: 1 },
+                        { color: '#FFD93D', startSlot: 0 }
                     ]
                 }
             ]

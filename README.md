@@ -1,15 +1,19 @@
-# 🧶 Yarn Puzzle Game
+# 🐴 DonkeyPuzzles
 
 Colorful yarn untangling puzzle game built with HTML5 Canvas. Sort colorful yarns into matching slots in this relaxing and engaging puzzle experience!
+
+**Inspired by Yarn Fever! Unravel Puzzle** - but with no ads or micropayments. Pure fun! 🎮
 
 ## 🎮 Game Features
 
 - **Colorful Graphics**: Vibrant gradients and smooth animations
 - **Progressive Difficulty**: Multiple levels with increasing complexity
 - **Touch & Mouse Support**: Play on desktop or mobile devices
-- **No Ads or Microtransactions**: Pure gameplay fun!
-- **Local Save System**: Your progress is automatically saved
+- **No Ads or Micropayments**: Pure gameplay fun!
+- **Hint System**: Get help when stuck
 - **Undo & Reset**: Made a mistake? No problem!
+- **Particle Effects**: Satisfying visual feedback
+- **Score System**: Track your progress and improvements
 
 ## 🎯 How to Play
 
@@ -17,6 +21,8 @@ Colorful yarn untangling puzzle game built with HTML5 Canvas. Sort colorful yarn
 2. **Match colors** - each target slot must contain yarns of the same color
 3. **Fill completely** - each target slot must be filled to capacity
 4. **Strategic planning** - use temporary slots wisely as they have limited space!
+
+**Goal**: Sort all yarns into their matching color slots to complete the level!
 
 ## 🚀 Getting Started
 
@@ -29,9 +35,10 @@ Simply open `index.html` in a modern web browser!
 git clone https://github.com/buksa656/yarn-puzzle-game.git
 cd yarn-puzzle-game
 
-# Open with a local server (recommended)
+# Option 1: Python HTTP Server
 python -m http.server 8000
-# or
+
+# Option 2: Node.js
 npx serve
 
 # Then navigate to http://localhost:8000
@@ -54,7 +61,7 @@ yarn-puzzle-game/
 │   └── utils.js        # Helper functions
 ├── levels/
 │   └── levels.json     # Level definitions
-└── assets/             # Future: images and sounds
+└── README.md           # This file
 ```
 
 ## 🎨 Color Palette
@@ -68,18 +75,18 @@ The game features a vibrant color scheme:
 - Lavender (#B4A7D6)
 - And more!
 
-## 🔧 Technology Stack
+## 🛠️ Technology Stack
 
 - **HTML5 Canvas** - Core rendering
 - **Vanilla JavaScript** - No frameworks needed
-- **CSS3** - Modern styling with gradients
+- **CSS3** - Modern styling with gradients and animations
 - **JSON** - Level data management
 
 ## 📱 Mobile Porting Roadmap
 
 The codebase is designed for easy mobile porting:
 
-1. **Phase 1** (Current): Web version with touch support
+1. **Phase 1** (Current): Web version with full touch support
 2. **Phase 2**: PWA with offline capabilities
 3. **Phase 3**: Cordova/Capacitor wrapper for app stores
 4. **Phase 4**: Native optimizations
@@ -91,10 +98,25 @@ The codebase is designed for easy mobile porting:
 - [ ] Daily challenges
 - [ ] Level editor
 - [ ] Sound effects and music
-- [ ] Particle effects
-- [ ] Time trial mode (optional)
 - [ ] Color blind mode
-- [ ] Multiple themes
+- [ ] Multiple themes/skins
+- [ ] Leaderboards
+- [ ] Multiplayer mode
+- [ ] Level difficulty selection
+
+## 🎮 Gameplay Improvements
+
+Version 1.0 includes:
+- ✅ Enhanced drag & drop mechanics
+- ✅ Particle effects on successful moves
+- ✅ Hint system
+- ✅ Level completion rewards
+- ✅ Perfect move bonus (when completing level with optimal moves)
+- ✅ Settings menu (sound & particles)
+- ✅ Level selection screen
+- ✅ Improved visual feedback
+- ✅ Better mobile responsiveness
+- ✅ Smooth animations and transitions
 
 ## 🤝 Contributing
 
@@ -104,6 +126,7 @@ Contributions are welcome! Feel free to:
 - Create new levels
 - Improve graphics
 - Optimize performance
+- Add translations
 
 ## 📄 License
 
@@ -111,8 +134,10 @@ MIT License - Feel free to use and modify!
 
 ## 🎮 Play & Enjoy!
 
-Have fun untangling those yarns! 🧶✨
+Have fun untangling those yarns! 🐴✨
 
 ---
 
 **Created with ❤️ for puzzle game lovers**
+
+*No ads. No micropayments. Just pure, fun gameplay.*

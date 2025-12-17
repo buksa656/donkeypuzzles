@@ -1,11 +1,12 @@
 // Slot class for holding yarns
 class Slot {
-    constructor(id, type, capacity) {
+    constructor(id, type, capacity, targetColor = null) {
         this.id = id;
         this.type = type; // 'target' or 'temp'
         this.capacity = capacity;
         this.yarns = [];
-        this.targetColor = null; // For target slots
+        this.targetColor = targetColor;
+        this.renderPosition = null;
     }
     
     addYarn(yarn) {
@@ -31,7 +32,7 @@ class Slot {
             yarn.currentSlot = null;
             
             // Reset target color if empty
-            if (this.yarns.length === 0) {
+            if (this.yarns.length === 0 && this.type === 'target') {
                 this.targetColor = null;
             }
             
@@ -61,14 +62,13 @@ class Slot {
     }
     
     isComplete() {
-        return this.type === 'target' && 
-               this.yarns.length === this.capacity && 
+        return this.type === 'target' &&
+               this.yarns.length === this.capacity &&
                this.yarns.every(y => y.color === this.targetColor);
     }
     
     getYarnPosition(yarn) {
         const index = this.yarns.indexOf(yarn);
-        // Position will be calculated by renderer
         return { slotId: this.id, type: this.type, index: index };
     }
 }

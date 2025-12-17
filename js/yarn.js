@@ -5,6 +5,8 @@ class Yarn {
         this.color = color;
         this.currentSlot = null;
         this.dragPosition = null;
+        this.isDragged = false;
+        this.showHint = false;
     }
     
     isTopOfStack() {

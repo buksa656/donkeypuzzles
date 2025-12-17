@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#FF6B9D">
-    <title>Yarn Puzzle - Colorful Untangle Game</title>
+    <title>🐴 DonkeyPuzzles - Untangle & Sort</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="game-container">
         <header>
-            <h1>🧶 Yarn Puzzle</h1>
+            <h1>🐴 DonkeyPuzzles</h1>
             <div class="stats">
                 <span id="level-display">Level: 1</span>
                 <span id="moves-display">Moves: 0</span>
@@ -19,30 +19,63 @@
         </header>
         
         <main>
+            <div class="game-info">
+                <p id="level-objective">Sort all yarns into their matching color slots!</p>
+            </div>
             <canvas id="game-canvas"></canvas>
             
             <div id="controls">
-                <button id="undo-btn" class="btn btn-secondary">↶ Undo</button>
-                <button id="reset-btn" class="btn btn-warning">⟲ Reset</button>
-                <button id="hint-btn" class="btn btn-info">💡 Hint</button>
+                <button id="undo-btn" class="btn btn-secondary" title="Undo last move">↶ Undo</button>
+                <button id="reset-btn" class="btn btn-warning" title="Reset level">↻ Reset</button>
+                <button id="hint-btn" class="btn btn-info" title="Get a hint">💡 Hint</button>
             </div>
         </main>
         
         <div id="level-complete" class="modal hidden">
-            <div class="modal-content">
+            <div class="modal-content celebration">
                 <h2>🎉 Level Complete!</h2>
-                <p>Moves: <span id="final-moves">0</span></p>
-                <p>Score: <span id="final-score">0</span></p>
+                <div class="result-stats">
+                    <p>Moves: <span id="final-moves" class="stat-value">0</span></p>
+                    <p>Score: <span id="final-score" class="stat-value">0</span></p>
+                    <p id="perfect-bonus" class="hidden">⭐ Perfect! Bonus: +500!</p>
+                </div>
                 <button id="next-level-btn" class="btn btn-primary">Next Level →</button>
             </div>
         </div>
         
         <div id="menu" class="modal hidden">
-            <div class="modal-content">
-                <h2>Yarn Puzzle</h2>
+            <div class="modal-content menu-content">
+                <h1>🐴 DonkeyPuzzles</h1>
                 <p>Untangle colorful yarns and sort them into matching slots!</p>
-                <button id="start-btn" class="btn btn-primary">Start Game</button>
-                <button id="select-level-btn" class="btn btn-secondary">Select Level</button>
+                <div class="menu-buttons">
+                    <button id="start-btn" class="btn btn-primary btn-large">Start Game</button>
+                    <button id="select-level-btn" class="btn btn-secondary">Select Level</button>
+                    <button id="settings-btn" class="btn btn-info">Settings</button>
+                </div>
+                <p class="version">v1.0 - No ads, no micropayments. Pure fun! 🎮</p>
+            </div>
+        </div>
+
+        <div id="level-select" class="modal hidden">
+            <div class="modal-content">
+                <h2>Select Level</h2>
+                <div id="level-buttons" class="level-grid"></div>
+                <button id="close-select-btn" class="btn btn-secondary">Back</button>
+            </div>
+        </div>
+
+        <div id="settings" class="modal hidden">
+            <div class="modal-content">
+                <h2>Settings</h2>
+                <div class="settings-item">
+                    <label for="sound-toggle">Sound Effects</label>
+                    <input type="checkbox" id="sound-toggle" checked>
+                </div>
+                <div class="settings-item">
+                    <label for="particles-toggle">Particle Effects</label>
+                    <input type="checkbox" id="particles-toggle" checked>
+                </div>
+                <button id="close-settings-btn" class="btn btn-secondary">Back</button>
             </div>
         </div>
     </div>
