@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FF6B9D">
+    <title>Yarn Puzzle - Colorful Untangle Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>🧶 Yarn Puzzle</h1>
+            <div class="stats">
+                <span id="level-display">Level: 1</span>
+                <span id="moves-display">Moves: 0</span>
+                <span id="score-display">Score: 0</span>
+            </div>
+        </header>
+        
+        <main>
+            <canvas id="game-canvas"></canvas>
+            
+            <div id="controls">
+                <button id="undo-btn" class="btn btn-secondary">↶ Undo</button>
+                <button id="reset-btn" class="btn btn-warning">⟲ Reset</button>
+                <button id="hint-btn" class="btn btn-info">💡 Hint</button>
+            </div>
+        </main>
+        
+        <div id="level-complete" class="modal hidden">
+            <div class="modal-content">
+                <h2>🎉 Level Complete!</h2>
+                <p>Moves: <span id="final-moves">0</span></p>
+                <p>Score: <span id="final-score">0</span></p>
+                <button id="next-level-btn" class="btn btn-primary">Next Level →</button>
+            </div>
+        </div>
+        
+        <div id="menu" class="modal hidden">
+            <div class="modal-content">
+                <h2>Yarn Puzzle</h2>
+                <p>Untangle colorful yarns and sort them into matching slots!</p>
+                <button id="start-btn" class="btn btn-primary">Start Game</button>
+                <button id="select-level-btn" class="btn btn-secondary">Select Level</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/utils.js"></script>
+    <script src="js/yarn.js"></script>
+    <script src="js/slot.js"></script>
+    <script src="js/level.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
