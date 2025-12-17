@@ -5,9 +5,9 @@ class Renderer {
         this.ctx = ctx;
         
         this.slotWidth = 70;
-        this.slotHeight = 130;
+        this.slotHeight = 150; // ZWIĘKSZONE z 130 na 150 - więcej miejsca na kulki
         this.yarnRadius = 22;
-        this.yarnSpacing = 35;
+        this.yarnSpacing = 30; // ZWIĘKSZONE z 35 na 30 dla lepszego balansu
         
         this.resize();
     }
@@ -84,7 +84,7 @@ class Renderer {
     
     drawSlots(slots, type) {
         const isTarget = type === 'target';
-        const y = isTarget ? 50 : this.canvas.height - 170;
+        const y = isTarget ? 50 : this.canvas.height - 190; // ZWIĘKSZONE z -170 na -190
         const spacing = 18;
         const totalWidth = slots.length * (this.slotWidth + spacing);
         const startX = (this.canvas.width - totalWidth) / 2;
@@ -132,7 +132,7 @@ class Renderer {
             this.ctx.font = 'bold 20px Arial';
             this.ctx.textAlign = 'center';
             this.ctx.textBaseline = 'middle';
-            this.ctx.fillText('✓', x + this.slotWidth / 2, y + this.slotHeight / 2);
+            this.ctx.fillText('✓', x + this.slotWidth / 2, y + 25); // ZMIENIONE pozycjonowanie
         }
         
         // Draw capacity indicator
@@ -145,14 +145,23 @@ class Renderer {
             x + this.slotWidth / 2,
             y + this.slotHeight + 8
         );
+        
+        // NOWE: Draw target color indicator for target slots
+        if (isTarget && slot.targetColor) {
+            this.ctx.fillStyle = slot.targetColor;
+            this.ctx.fillRect(x + 5, y + 5, 15, 15);
+            this.ctx.strokeStyle = '#333';
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeRect(x + 5, y + 5, 15, 15);
+        }
     }
     
     drawYarn(yarn, isDragged = false) {
         const pos = this.getYarnScreenPosition(yarn);
         
-        // Draw glow if dragged
+        // Draw glow if dragged or hinted
         if (isDragged || yarn.showHint) {
-            this.ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            this.ctx.fillStyle = yarn.showHint ? 'rgba(255, 215, 0, 0.5)' : 'rgba(100, 150, 255, 0.3)';
             this.ctx.beginPath();
             this.ctx.arc(pos.x, pos.y, this.yarnRadius + 8, 0, Math.PI * 2);
             this.ctx.fill();
@@ -210,9 +219,14 @@ class Renderer {
         
         if (slot && slot.renderPosition) {
             const slotPos = slot.renderPosition;
+            
+            // NAPRAWIONE: Lepsze pozycjonowanie kulek w stacku od dołu do góry
+            const stackIndex = slot.yarns.indexOf(yarn);
+            const yOffset = this.yarnSpacing * stackIndex;
+            
             return {
                 x: slotPos.x + slotPos.width / 2,
-                y: slotPos.y + slotPos.height - 35 - (posData.index * this.yarnSpacing)
+                y: slotPos.y + slotPos.height - 30 - yOffset // Zaczynamy od dołu i idziemy w górę
             };
         }
         
